@@ -17,7 +17,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 # --config Release explicitly when you want the optimized build.
 get_property(IS_MULTI_CONFIG GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
 if(NOT IS_MULTI_CONFIG AND NOT CMAKE_BUILD_TYPE)
-    set(CMAKE_BUILD_TYPE Release CACHE STRING "Build type" FORCE)
+    set(CMAKE_BUILD_TYPE Release CACHE STRING "Build type")
 endif()
 
 add_executable(light-js
