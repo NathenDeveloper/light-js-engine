@@ -11,6 +11,7 @@ Light JS Engine is a sandboxed, garbage-collected lightweight JavaScript engine 
 - `Value.hpp`: Dynamic value representation (undefined, null, boolean, number, object) and the object model used by the garbage collector
 - `VM.hpp`: Stack-based virtual machine, instruction metering, call-depth limiting, and mark-sweep garbage collection
 - `NativeBindings.hpp`: Sandboxed native function registry (print, sqrt, abs, pow, floor, ceil, min, max) with an output budget and no OS-level access
+- `CMakeLists.txt`: CMake build configuration (see Building and Running below)
 - `.gitignore`: Excluded build artifacts and system files
 
 ## Current Capabilities
@@ -36,9 +37,28 @@ Light JS Engine is a sandboxed, garbage-collected lightweight JavaScript engine 
 
 ## Building and Running
 
+The project builds with CMake (3.16+). Requires a C++17 compiler: GCC, Clang, or MSVC.
+
+On Linux/macOS, or Windows with Ninja/Makefiles (single-config generators):
+
 ```
-g++ -std=c++17 -o light-js main.cpp
+mkdir build && cd build
+cmake ..
+cmake --build .
 ./light-js
 ```
+
+`CMAKE_BUILD_TYPE` defaults to `Release` if not specified. Pass `-DCMAKE_BUILD_TYPE=Debug` to get a debug build instead, which on GCC/Clang also enables AddressSanitizer and UndefinedBehaviorSanitizer.
+
+On Windows with Visual Studio (a multi-config generator):
+
+```
+mkdir build && cd build
+cmake .. -G "Visual Studio 17 2022"
+cmake --build . --config Release
+.\Release\light-js.exe
+```
+
+Multi-config generators choose Debug vs. Release at build time via `--config`, not at configure time, and default to Debug if `--config` is omitted.
 
 `main.cpp` currently compiles and runs a single hardcoded script string as a demonstration harness. Point it at a different source string, or extend it to read from a file or stdin, to run other scripts.
