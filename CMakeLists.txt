@@ -10,17 +10,13 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 # plain `cmake .. && make` doesn't silently produce an unoptimized build.
 #
 # Multi-config generators (Visual Studio, Xcode) ignore CMAKE_BUILD_TYPE
-# entirely — the config is chosen later, at build time (`cmake --build .
-# --config Release`) or via the IDE's configuration dropdown. For those,
-# set CMAKE_CONFIGURATION_TYPES instead to control which configs exist
-# and their order; Visual Studio itself defaults its dropdown to Debug
-# regardless, so pass --config Release explicitly when you want that.
+# entirely and already ship their own default config list (typically
+# Debug;Release;RelWithDebInfo;MinSizeRel) — no need to set anything for
+# them here. The config is chosen at build time (`cmake --build . --config
+# Release`) or via the IDE's dropdown, which defaults to Debug; pass
+# --config Release explicitly when you want the optimized build.
 get_property(IS_MULTI_CONFIG GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
-if(IS_MULTI_CONFIG)
-    if(NOT CMAKE_CONFIGURATION_TYPES)
-        set(CMAKE_CONFIGURATION_TYPES "Debug;Release" CACHE STRING "Available configs" FORCE)
-    endif()
-elseif(NOT CMAKE_BUILD_TYPE)
+if(NOT IS_MULTI_CONFIG AND NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release CACHE STRING "Build type" FORCE)
 endif()
 
