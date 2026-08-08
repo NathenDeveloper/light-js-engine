@@ -17,15 +17,30 @@ add_executable(light-js
 
 # All the engine logic lives in headers (Lexer.hpp, Compiler.hpp, Chunk.hpp,
 # Value.hpp, VM.hpp, NativeBindings.hpp) included directly by main.cpp, so
-# there's only one translation unit. If you split into .cpp
+# there's only one translation unit. If you split implementations into .cpp
 # files later, add them to the add_executable() list above.
 target_include_directories(light-js PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 
-target_compile_options(light-js PRIVATE
-    -Wall
-    -Wextra
-    $<$<CONFIG:Debug>:-fsanitize=address,undefined -g>
-)
-target_link_options(light-js PRIVATE
-    $<$<CONFIG:Debug>:-fsanitize=address,undefined>
-)
+if(MSVC)
+    # /W4 is MSVC's rough equivalent of -Wall -Wextra.
+    # MSVC's sanitizer support (/fsanitize=address) is real but newer,
+    # more limited in coverage than ASan+UBSan on GCC/Clang, and not
+    # every MSVC toolchain has it installed — so it's left off by
+    # default rather than assumed present. Enable manually if your
+    # toolchain supports it: target_compile_options(light-js PRIVATE
+    # $<$<CONFIG:Debug>:/fsanitize=address>)
+    target_compile_options(light-js PRIVATE
+        /W4
+        $<$<CONFIG:Debug>:/Zi>
+    )
+else()
+    # GCC and Clang both understand this flag set.
+    target_compile_options(light-js PRIVATE
+        -Wall
+        -Wextra
+        $<$<CONFIG:Debug>:-fsanitize=address,undefined -g>
+    )
+    target_link_options(light-js PRIVATE
+        $<$<CONFIG:Debug>:-fsanitize=address,undefined>
+    )
+endif()
