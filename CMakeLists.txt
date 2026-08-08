@@ -17,7 +17,7 @@ add_executable(light-js
 
 # All the engine logic lives in headers (Lexer.hpp, Compiler.hpp, Chunk.hpp,
 # Value.hpp, VM.hpp, NativeBindings.hpp) included directly by main.cpp, so
-# there's only one translation unit. If you split implementations into .cpp
+# there's only one translation unit. If you split into .cpp
 # files later, add them to the add_executable() list above.
 target_include_directories(light-js PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 
